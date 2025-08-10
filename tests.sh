@@ -89,11 +89,49 @@ test_restore() {
 
   filer restore foo.txt
 
-  if [ -f foo.txtg ]; then
+  if [ -f foo.txt ]; then
     return 0
   else
     return 1
   fi
+}
+
+
+test_organize() {
+  touch foo.txt bar.txt
+  touch foo.sh bar.sh
+
+  filer organize foo.txt bar.txt foo.sh bar.sh
+
+  [ ! -e txt/foo.txt ] && return 1
+  [ ! -e txt/bar.txt ] && return 1
+  [ ! -e sh/foo.sh ] && return 1
+  [ ! -e sh/bar.sh ] && return 1
+
+  return 0
+}
+
+test_organize_speed() {
+  touch {a..z}{a..z}.sh
+  touch {a..z}.ppt
+  touch a.{a..z}{a..z}
+
+  echo "Organizing " $(ls | wc -l) "Files"
+  
+  time filer organize *
+  return 0
+}
+
+test_backup_speed() {
+  touch {a..z}{a..z}.sh
+  touch {a..z}.ppt
+  touch a.{a..z}{a..z}
+  
+  echo "Backup " $(ls | wc -l) "Files"
+
+  time filer backup * >/dev/null
+
+  return 0
 }
 
 # Runs tests one by one
@@ -102,6 +140,9 @@ run() {
 
   run_test "test_backup" && count=$(( $count + 1 ))
   run_test "test_restore" && count=$(( $count + 1 ))
+  run_test "test_organize" && count=$(( $count + 1 ))
+  run_test "test_organize_speed" && count=$(( $count + 1 ))
+  run_test "test_backup_speed" && count=$(( $count + 1 ))
 
   echo "Total succedeed tests: $count"
 }
