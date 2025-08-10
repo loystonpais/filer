@@ -24,7 +24,7 @@ Use `organize` subcommand to organize given files into their respective folders 
 
 Example:
 ```sh
-filer organize . # organizes all files in the given directory
+filer organize * # organizes all files in the given directory
 
 filer organize foo.txt bar.sh baz.sh # organize list of files
 ```
